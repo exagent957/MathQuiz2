@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,7 +20,12 @@ namespace MathQuiz2
         int dividend, divisor;
         int timeLeft;
         DateTime localDate = DateTime.Today;
-        
+        bool addPlayed = false;
+        bool minusPlayed = false;
+        bool timesPlayed = false;
+        bool divPlayed = false;
+        SoundPlayer playSound = new SoundPlayer(@"c:\Windows\Media\chimes.wav");
+
         public Form1()
         {
             InitializeComponent();
@@ -36,6 +42,7 @@ namespace MathQuiz2
                 int lengthOfAnswer = answerBox.Value.ToString().Length;
                 answerBox.Select(0, lengthOfAnswer);
             }
+            SoundCorrect();
         }
 
         public void StartTheQuiz()
@@ -70,7 +77,11 @@ namespace MathQuiz2
             timeLabel.Text = timeLeft.ToString() + " seconds";
             quizTimer.Start();
 
-
+            // Re-Set play sound for correct answer for each new game
+             addPlayed = false;
+             minusPlayed = false;
+             timesPlayed = false;
+             divPlayed = false;
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -88,6 +99,14 @@ namespace MathQuiz2
                 return true;
             else
                 return false;
+        }
+        private bool SoundCorrect()
+        {            
+            if (addend1 + addend2 == sum.Value && !addPlayed) {playSound.Play(); return addPlayed = true;}
+            else if (minuend - subtrahend == difference.Value && !minusPlayed){playSound.Play(); return minusPlayed = true;}
+            else if (multiplicand * multiplier == product.Value && !timesPlayed) {playSound.Play(); return timesPlayed = true;}
+            else if (dividend / divisor == quotient.Value && !divPlayed) {playSound.Play(); return divPlayed = true;}
+            else { return false; }
         }
 
         private void quizTimer_Tick(object sender, EventArgs e)
